@@ -1,0 +1,140 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// Role: "STUDENT" or "ADVOCACY_CHAIR" or "ADMIN"
+// AspirationLevel: "PRODI", "FACULTY", "UNIVERSITY", or "UKM"
+// AdvocacyScope: "PRODI", "FACULTY", "UNIVERSITY", or "UKM" — limits what a chair can see
+
+model User {
+  id            String   @id @default(uuid())
+  nim           String   @unique
+  password      String
+  role          String   @default("STUDENT")
+  // For ADVOCACY_CHAIR: scope indicates their jurisdiction level
+  // PRODI = sees only their prodi, FACULTY = sees their faculty, UNIVERSITY = sees all
+  advocacyScope String?  // "PRODI" | "FACULTY" | "UNIVERSITY"
+
+  prodiId   String?
+  prodi     Prodi?   @relation(fields: [prodiId], references: [id])
+
+  ukmId     String?
+  ukm       UKM?     @relation(fields: [ukmId], references: [id])
+
+  aspirations Aspiration[]
+
+  documents AdvocacyDocument[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([nim])
+  @@index([role])
+}
+
+model Aspiration {
+  id          String   @id @default(uuid())
+  title       String
+  content     String
+  evidenceUrl String?
+  level       String   // "PRODI" | "FACULTY" | "UNIVERSITY" | "UKM"
+  isArchived  Boolean  @default(false)
+
+  studentId   String
+  student     User     @relation(fields: [studentId], references: [id])
+
+  prodiId     String?
+  prodi       Prodi?   @relation(fields: [prodiId], references: [id])
+
+  facultyId   String?
+  faculty     Faculty? @relation(fields: [facultyId], references: [id])
+
+  universityId String?
+  university   University? @relation(fields: [universityId], references: [id])
+
+  ukmId       String?
+  ukm         UKM?        @relation(fields: [ukmId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([studentId])
+  @@index([level])
+  @@index([prodiId])
+  @@index([facultyId])
+  @@index([universityId])
+  @@index([ukmId])
+  @@index([createdAt])
+}
+
+model University {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  faculties   Faculty[]
+  aspirations Aspiration[]
+}
+
+model Faculty {
+  id           String   @id @default(uuid())
+  name         String
+  universityId String
+  university   University @relation(fields: [universityId], references: [id])
+  prodis       Prodi[]
+  aspirations  Aspiration[]
+
+  @@index([universityId])
+}
+
+model Prodi {
+  id           String   @id @default(uuid())
+  name         String
+  facultyId    String
+  faculty      Faculty  @relation(fields: [facultyId], references: [id])
+  users        User[]
+  aspirations  Aspiration[]
+
+  @@index([facultyId])
+}
+
+model UKM {
+  id          String       @id @default(uuid())
+  name        String       @unique
+  users       User[]
+  aspirations Aspiration[]
+}
+
+model SystemSettings {
+  id                      String  @id @default("GLOBAL")
+  prodiCanSeeFaculty      Boolean @default(false)
+  prodiCanSeeUniversity   Boolean @default(false)
+  facultyCanSeeProdi      Boolean @default(true)
+  facultyCanSeeUniversity Boolean @default(false)
+  universityCanSeeProdi   Boolean @default(true)
+  universityCanSeeFaculty Boolean @default(true)
+}
+
+model AdvocacyDocument {
+  id           String   @id @default(uuid())
+  title        String
+  fileUrl      String
+  uploaderId   String
+  uploader     User     @relation(fields: [uploaderId], references: [id])
+  
+  level        String   // "PRODI" | "FACULTY" | "UNIVERSITY" | "UKM"
+  prodiId      String?
+  facultyId    String?
+  universityId String?
+  ukmId        String?
+
+  createdAt    DateTime @default(now())
+
+  @@index([level])
+  @@index([uploaderId])
+}
