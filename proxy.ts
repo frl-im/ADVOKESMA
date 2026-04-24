@@ -6,7 +6,7 @@ import type { NextRequest } from 'next/server';
 // For production scale, it's recommended to use a distributed KV store like Redis (e.g., @upstash/redis).
 const rateLimitCache = new Map<string, { count: number; expiresAt: number }>();
 
-export function middleware(request: NextRequest) {
+export default function proxy(request: NextRequest) {
   // 1. Rate Limiting Logic (specifically on /api/aspirations endpoint)
   if (request.nextUrl.pathname.startsWith('/api/aspirations') && request.method === 'POST') {
     // Get IP address (fallback to 'unknown' if not available in headers)
