@@ -9,7 +9,7 @@ interface ChartData {
     byLevel: { name: string; total: number; color: string }[];
     byMonth: { bulan: string; total: number }[];
     byProdi: { name: string; total: number }[];
-    top10: { title: string; count: number; senders?: string[] }[];
+    top10: { title: string; count: number; senders?: string[]; contents?: string[] }[];
 }
 
 interface Props {
@@ -173,14 +173,28 @@ export default function RecapCharts({ data, scope }: Props) {
                                                     <summary style={{ margin: 0, fontSize: '0.85rem', color: '#1a1e2e', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontWeight: 600, outline: 'none' }} title={item.title}>
                                                         {item.title}
                                                     </summary>
-                                                    {item.senders && item.senders.length > 0 && (
-                                                        <div style={{ marginTop: '0.4rem', padding: '0.4rem', background: '#fff', borderRadius: '4px', fontSize: '0.75rem', color: '#5a6480', border: '1px solid #eef2ff' }}>
-                                                            <strong style={{ display: 'block', marginBottom: '0.2rem' }}>Dikirim oleh:</strong>
-                                                            <ul style={{ margin: 0, paddingLeft: '1.2rem' }}>
-                                                                {item.senders.map((sender, i) => (
-                                                                    <li key={i}>{sender}</li>
-                                                                ))}
-                                                            </ul>
+                                                    {(item.senders || item.contents) && (
+                                                        <div style={{ marginTop: '0.4rem', padding: '0.6rem', background: '#fff', borderRadius: '4px', fontSize: '0.75rem', color: '#5a6480', border: '1px solid #eef2ff' }}>
+                                                            {item.contents && item.contents.length > 0 && (
+                                                                <div style={{ marginBottom: '0.5rem' }}>
+                                                                    <strong style={{ display: 'block', marginBottom: '0.2rem', color: '#1a3a6b' }}>Maksud / Detail Aspirasi:</strong>
+                                                                    <ul style={{ margin: 0, paddingLeft: '1.2rem', listStyleType: 'disc' }}>
+                                                                        {item.contents.map((content, i) => (
+                                                                            <li key={i} style={{ marginBottom: '0.25rem' }}>{content}</li>
+                                                                        ))}
+                                                                    </ul>
+                                                                </div>
+                                                            )}
+                                                            {item.senders && item.senders.length > 0 && (
+                                                                <div>
+                                                                    <strong style={{ display: 'block', marginBottom: '0.2rem', color: '#1a3a6b' }}>Dikirim oleh:</strong>
+                                                                    <ul style={{ margin: 0, paddingLeft: '1.2rem', listStyleType: 'disc' }}>
+                                                                        {item.senders.map((sender, i) => (
+                                                                            <li key={i}>{sender}</li>
+                                                                        ))}
+                                                                    </ul>
+                                                                </div>
+                                                            )}
                                                         </div>
                                                     )}
                                                 </details>

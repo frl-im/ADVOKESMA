@@ -152,11 +152,14 @@ export default async function RecapPage({ searchParams }: PageProps) {
         .sort((a, b) => b.total - a.total)
         .slice(0, 6);
 
-    const titleMap: Record<string, { count: number, senders: Set<string> }> = {};
+    const titleMap: Record<string, { count: number, senders: Set<string>, contents: string[] }> = {};
     aspirations.forEach((a: any) => {
         const t = a.title.trim();
-        if (!titleMap[t]) titleMap[t] = { count: 0, senders: new Set() };
+        if (!titleMap[t]) titleMap[t] = { count: 0, senders: new Set(), contents: [] };
         titleMap[t].count++;
+        if (a.content && !titleMap[t].contents.includes(a.content) && titleMap[t].contents.length < 3) {
+            titleMap[t].contents.push(a.content);
+        }
         let senderName = '';
         if (a.level === 'PRODI' && a.prodi?.name) senderName = `Prodi ${a.prodi.name}`;
         else if (a.level === 'FACULTY' && a.faculty?.name) senderName = `Fakultas ${a.faculty.name}`;
@@ -172,7 +175,7 @@ export default async function RecapPage({ searchParams }: PageProps) {
     const top10 = Object.entries(titleMap)
         .sort((a, b) => b[1].count - a[1].count)
         .slice(0, 10)
-        .map(([title, data]) => ({ title, count: data.count, senders: Array.from(data.senders) }));
+        .map(([title, data]) => ({ title, count: data.count, senders: Array.from(data.senders), contents: data.contents }));
 
     const chartData = { byLevel, byMonth, byProdi, top10 };
 
