@@ -51,7 +51,7 @@ export default async function RecapPage({ searchParams }: PageProps) {
         whereClause = { OR: orConditions };
     } else if (scope === 'FACULTY') {
         const orConditions: any[] = [{ level: 'FACULTY', facultyId }];
-        if (settings?.facultyCanSeeProdi) orConditions.push({ level: 'PRODI', prodi: { facultyId } });
+        if (settings?.facultyCanSeeProdi && facultyId) orConditions.push({ level: 'PRODI', prodi: { facultyId } });
         if (settings?.facultyCanSeeUniversity) orConditions.push({ level: 'UNIVERSITY' });
         whereClause = { OR: orConditions };
     } else if (scope === 'UNIVERSITY') {
@@ -154,7 +154,7 @@ export default async function RecapPage({ searchParams }: PageProps) {
 
     const titleMap: Record<string, { count: number, senders: Record<string, number>, contents: string[] }> = {};
     aspirations.forEach((a: any) => {
-        const t = a.title.trim();
+        const t = (a.title || 'Tanpa Judul').trim();
         if (!titleMap[t]) titleMap[t] = { count: 0, senders: {}, contents: [] };
         titleMap[t].count++;
         if (a.content && !titleMap[t].contents.includes(a.content) && titleMap[t].contents.length < 3) {
