@@ -86,34 +86,57 @@ export default async function DashboardPage() {
                     <div>
                         <h2 className="mb-4">Panduan Pengisian Aspirasi</h2>
 
-                        <div className="info-card">
-                            <h3>
+                        <div className="info-card mb-4" style={{ padding: '1rem', background: '#f8faff', border: '1px solid #eef2ff', borderRadius: '8px' }}>
+                            <h3 style={{ fontSize: '0.95rem', marginBottom: '0.5rem', color: '#1a3a6b', display: 'flex', alignItems: 'center' }}>
                                 <span className="badge badge-prodi" style={{ marginRight: '0.5rem' }}>Prodi</span>
-                                Tingkat Program Studi
+                                Isu Program Studi
                             </h3>
-                            <p>
-                                Aspirasi spesifik terkait Himpunan Jurusan Anda (misal: Kurikulum prodi, kelengkapan alat Lab jurusan, atau kualitas pengajaran dosen program studi).
-                            </p>
+                            <ul style={{ paddingLeft: '1.25rem', fontSize: '0.85rem', color: '#334155', margin: 0, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                                <li>Jadwal Kuliah, Kurikulum, Biaya Akademik, Sistem KRS dan KHS, pembimbing akademik</li>
+                                <li>Praktik Laboratorium dan fasilitas prodi seperti alat lab, ketersediaan bahan praktikum, dll</li>
+                                <li>Program pengembangan mahasiswa di Tingkat jurusan seperti seminar jurusan, workshop, dll</li>
+                                <li>Isu-isu yang belum disebutkan tapi masih dalam cangkupan Tanggung jawab Prodi</li>
+                            </ul>
                         </div>
 
-                        <div className="info-card faculty-card">
-                            <h3>
+                        <div className="info-card mb-4" style={{ padding: '1rem', background: '#f5f3ff', border: '1px solid #ede9fe', borderRadius: '8px' }}>
+                            <h3 style={{ fontSize: '0.95rem', marginBottom: '0.5rem', color: '#7c3aed', display: 'flex', alignItems: 'center' }}>
                                 <span className="badge badge-faculty" style={{ marginRight: '0.5rem' }}>Fakultas</span>
-                                Tingkat Fakultas
+                                Isu Fakultas
                             </h3>
-                            <p>
-                                Aspirasi layanan BEM Fakultas secara luas. Contoh: fasilitas ruang bersama fakultas, sistem perizinan dekanat, atau anggaran himpunan.
-                            </p>
+                            <ul style={{ paddingLeft: '1.25rem', fontSize: '0.85rem', color: '#334155', margin: 0, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                                <li>Sarana dan Prasarana Fakultas</li>
+                                <li>Kebijakan Fakultas</li>
+                                <li>Sistem administrasi</li>
+                                <li>Isu-isu yang belum disebutkan tapi dalam cangkupan Tanggung jawab Fakultas</li>
+                            </ul>
                         </div>
 
-                        <div className="info-card uni-card">
-                            <h3>
+                        <div className="info-card mb-4" style={{ padding: '1rem', background: '#fffbeb', border: '1px solid #fef3c7', borderRadius: '8px' }}>
+                            <h3 style={{ fontSize: '0.95rem', marginBottom: '0.5rem', color: '#d97706', display: 'flex', alignItems: 'center' }}>
                                 <span className="badge badge-university" style={{ marginRight: '0.5rem' }}>Universitas</span>
-                                Tingkat Universitas
+                                Isu Universitas
                             </h3>
-                            <p>
-                                Aspirasi level teratas untuk Rektorat / BEM UNIMUS: Tagihan biaya UKT, kebijakan kampus secara umum, infrastruktur pusat, dan sistem akademik (SIA).
-                            </p>
+                            <ul style={{ paddingLeft: '1.25rem', fontSize: '0.85rem', color: '#334155', margin: 0, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                                <li>Kebijakan Universitas</li>
+                                <li>Perpustakaan Pusat</li>
+                                <li>Sarana Olahraga</li>
+                                <li>Layanan Kesehatan mahasiswa</li>
+                                <li>Infrastruktur kampus yang mendukung kegiatan akademik</li>
+                                <li>Isu-isu yang belum disebutkan tapi dalam cangkupan Tanggung jawab Universitas</li>
+                            </ul>
+                        </div>
+
+                        <div className="info-card" style={{ padding: '1rem', background: '#f0f9ff', border: '1px solid #e0f2fe', borderRadius: '8px' }}>
+                            <h3 style={{ fontSize: '0.95rem', marginBottom: '0.5rem', color: '#0369a1', display: 'flex', alignItems: 'center' }}>
+                                <span className="badge badge-ukm" style={{ marginRight: '0.5rem', background: '#bae6fd', color: '#0369a1' }}>UKM</span>
+                                Isu UKM
+                            </h3>
+                            <ul style={{ paddingLeft: '1.25rem', fontSize: '0.85rem', color: '#334155', margin: 0, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                                <li>Sarana dan prasarana UKM</li>
+                                <li>Kebijakan Universitas Mengenai UKM</li>
+                                <li>Isu-isu yang belum disebutkan tapi dalam cangkupan UKM</li>
+                            </ul>
                         </div>
                     </div>
 

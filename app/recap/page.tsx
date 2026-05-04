@@ -437,9 +437,14 @@ export default async function RecapPage({ searchParams }: PageProps) {
                                                         </td>
                                                         <td>
                                                             {asp.evidenceUrl ? (
-                                                                <a href={asp.evidenceUrl} target="_blank" rel="noreferrer" className="badge" style={{ background: '#e0f2fe', color: '#0369a1', textDecoration: 'none' }}>
-                                                                    Lihat Foto
-                                                                </a>
+                                                                <details style={{ cursor: 'pointer', position: 'relative' }}>
+                                                                    <summary className="badge" style={{ background: '#e0f2fe', color: '#0369a1', outline: 'none', display: 'inline-block' }}>
+                                                                        Lihat Foto
+                                                                    </summary>
+                                                                    <div style={{ marginTop: '0.5rem', background: '#fff', padding: '0.5rem', borderRadius: '6px', border: '1px solid #eef2ff', position: 'absolute', zIndex: 10, boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
+                                                                        <img src={asp.evidenceUrl} alt="Bukti" style={{ maxWidth: '200px', borderRadius: '4px', display: 'block' }} />
+                                                                    </div>
+                                                                </details>
                                                             ) : (
                                                                 <span style={{ color: '#8a95b0', fontSize: '0.75rem' }}>—</span>
                                                             )}
