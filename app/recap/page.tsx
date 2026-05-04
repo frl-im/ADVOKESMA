@@ -104,6 +104,15 @@ export default async function RecapPage({ searchParams }: PageProps) {
         orderBy: { createdAt: 'desc' }
     });
 
+    let globalDocuments: any[] = [];
+    if (scope === 'UNIVERSITY') {
+        globalDocuments = await db.advocacyDocument.findMany({
+            where: { uploaderId: { not: userId } },
+            include: { uploader: { include: { prodi: { include: { faculty: true } }, ukm: true } } },
+            orderBy: { createdAt: 'desc' }
+        });
+    }
+
     // ── AGGREGATE STATS ───────────────────────────────────────────────
     const levelCounts = { PRODI: 0, FACULTY: 0, UNIVERSITY: 0, UKM: 0 };
     aspirations.forEach((a: any) => {
@@ -256,6 +265,44 @@ export default async function RecapPage({ searchParams }: PageProps) {
                     createdAt: d.createdAt.toISOString()
                 }))} />
 
+                {scope === 'UNIVERSITY' && globalDocuments.length > 0 && (
+                    <div className="card mb-6">
+                        <div className="card-header">
+                            <h2 style={{ marginBottom: 0 }}>📂 Dokumen Fakta Integritas (Dari Tingkat Lain)</h2>
+                            <span className="badge badge-primary">{globalDocuments.length} Dokumen</span>
+                        </div>
+                        <div className="card-body">
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                                {globalDocuments.map(doc => {
+                                    let senderName = doc.uploader?.nim || 'Unknown';
+                                    if (doc.level === 'UKM' && doc.uploader?.ukm?.name) senderName = `UKM ${doc.uploader.ukm.name}`;
+                                    else if (doc.level === 'FACULTY' && doc.uploader?.prodi?.faculty?.name) senderName = `BEM Fakultas ${doc.uploader.prodi.faculty.name}`;
+                                    else if (doc.level === 'PRODI' && doc.uploader?.prodi?.name) senderName = `Prodi ${doc.uploader.prodi.name}`;
+
+                                    return (
+                                        <div key={doc.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', border: '1px solid #eef2ff', borderRadius: 8, background: '#fff' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                                <div style={{ background: '#fee2e2', color: '#ef4444', padding: '0.5rem', borderRadius: 8, fontWeight: 'bold' }}>
+                                                    PDF
+                                                </div>
+                                                <div>
+                                                    <h4 style={{ margin: 0, color: '#1a3a6b', fontSize: '0.95rem' }}>{doc.title}</h4>
+                                                    <span style={{ fontSize: '0.75rem', color: '#8a95b0' }}>
+                                                        Oleh: <strong>{senderName}</strong> | {new Date(doc.createdAt).toLocaleDateString('id-ID')}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <a href={doc.fileUrl} target="_blank" rel="noreferrer" className="btn btn-secondary" style={{ padding: '0.3rem 0.75rem', fontSize: '0.8rem' }}>
+                                                Lihat Dokumen
+                                            </a>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 <div className="card mb-6">
                     <div className="card-header">
                         <h2 style={{ marginBottom: 0 }}>📋 Ringkasan Aspirasi</h2>
@@ -372,6 +419,7 @@ export default async function RecapPage({ searchParams }: PageProps) {
                                             <thead>
                                                 <tr>
                                                     <th>Tanggal</th>
+                                                    <th>Bukti</th>
                                                     <th>Status</th>
                                                     <th>Level</th>
                                                     <th>Ditujukan Ke</th>
@@ -386,6 +434,15 @@ export default async function RecapPage({ searchParams }: PageProps) {
                                                             {new Date(asp.createdAt).toLocaleDateString('id-ID', {
                                                                 day: '2-digit', month: 'short', year: 'numeric'
                                                             })}
+                                                        </td>
+                                                        <td>
+                                                            {asp.evidenceUrl ? (
+                                                                <a href={asp.evidenceUrl} target="_blank" rel="noreferrer" className="badge" style={{ background: '#e0f2fe', color: '#0369a1', textDecoration: 'none' }}>
+                                                                    Lihat Foto
+                                                                </a>
+                                                            ) : (
+                                                                <span style={{ color: '#8a95b0', fontSize: '0.75rem' }}>—</span>
+                                                            )}
                                                         </td>
                                                         <td>
                                                             {asp.isArchived ? (
