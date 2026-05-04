@@ -91,7 +91,7 @@ export default async function RecapPage({ searchParams }: PageProps) {
         orderBy: { createdAt: 'desc' },
         take: 500, // cap for performance
         include: {
-            student: { include: { prodi: true } },
+            student: { include: { prodi: { include: { faculty: true } } } },
             prodi: true,
             faculty: true,
             university: true,
@@ -390,9 +390,29 @@ export default async function RecapPage({ searchParams }: PageProps) {
                                                         </td>
                                                         <td className="td-title">{asp.title}</td>
                                                         <td className="td-content">
-                                                            {asp.content.length > 80
-                                                                ? `${asp.content.substring(0, 80)}…`
-                                                                : asp.content}
+                                                            {asp.content.length > 80 ? (
+                                                                <details style={{ cursor: 'pointer' }}>
+                                                                    <summary style={{ outline: 'none', color: '#1a3a6b', fontWeight: 500 }}>
+                                                                        {asp.content.substring(0, 80)}… <span style={{fontSize: '0.75rem', color: '#8a95b0'}}>(klik untuk lihat)</span>
+                                                                    </summary>
+                                                                    <div style={{ marginTop: '0.5rem', padding: '0.75rem', background: '#f8faff', borderRadius: '4px', fontSize: '0.85rem', color: '#334155' }}>
+                                                                        <p style={{ marginBottom: '0.5rem' }}><strong>Isi Aspirasi Lengkap:</strong><br/>{asp.content}</p>
+                                                                        <p style={{ margin: 0 }}><strong>Pengirim:</strong> {asp.student?.nim || '—'} 
+                                                                            {asp.student?.prodi ? ` - Prodi ${asp.student.prodi.name}` : ''}
+                                                                            {asp.student?.prodi?.faculty ? ` (Fakultas ${asp.student.prodi.faculty.name})` : ''}
+                                                                        </p>
+                                                                    </div>
+                                                                </details>
+                                                            ) : (
+                                                                <>
+                                                                    <div style={{ marginBottom: '0.5rem' }}>{asp.content}</div>
+                                                                    <div style={{ fontSize: '0.75rem', color: '#8a95b0' }}>
+                                                                        <strong>Pengirim:</strong> {asp.student?.nim || '—'} 
+                                                                        {asp.student?.prodi ? ` - Prodi ${asp.student.prodi.name}` : ''}
+                                                                        {asp.student?.prodi?.faculty ? ` (Fakultas ${asp.student.prodi.faculty.name})` : ''}
+                                                                    </div>
+                                                                </>
+                                                            )}
                                                         </td>
                                                     </tr>
                                                 ))}

@@ -101,25 +101,25 @@ export default function DocumentManager({ initialDocuments }: Props) {
         <div className="card mb-6">
             <div className="card-header">
                 <h2 style={{ marginBottom: 0 }}>🗃️ Manajemen Dokumen Advokasi</h2>
-                <span className="badge badge-primary">{documents.length}/3 Dokumen Terunggah</span>
+                <span className="badge badge-primary">{documents.length}/10 Dokumen Terunggah</span>
             </div>
             <div className="card-body">
                 <p style={{ color: '#5a6480', fontSize: '0.9rem', marginBottom: '1rem' }}>
-                    Unggah hasil advokasi Anda (seperti MoU, Surat Edaran, atau rilis) agar dapat dilihat oleh mahasiswa (Maksimal 3 file berformat PDF, kapasitas tiap PDF max 5MB).
+                    Unggah Fakta Integritas Anda agar dapat dilihat oleh mahasiswa (Maksimal 10 file berformat PDF, kapasitas tiap PDF max 5MB).
                 </p>
 
                 {error && <div className="alert alert-error mb-4">⚠ {error}</div>}
                 {message && <div className="alert alert-success mb-4">{message}</div>}
 
                 {/* Upload Form */}
-                {documents.length < 3 ? (
+                {documents.length < 10 ? (
                     <form onSubmit={handleUpload} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', background: '#f8faff', padding: '1rem', borderRadius: 8, border: '1px solid #eef2ff', marginBottom: '1.5rem' }}>
                         <div>
                             <label className="form-label">Judul Dokumen <span>*</span></label>
                             <input 
                                 type="text" 
                                 className="form-input" 
-                                placeholder="Contoh: MoU Kenaikan UKT" 
+                                placeholder="Contoh: Fakta Integritas" 
                                 value={title}
                                 onChange={e => setTitle(e.target.value)}
                                 required 
@@ -143,7 +143,7 @@ export default function DocumentManager({ initialDocuments }: Props) {
                     </form>
                 ) : (
                     <div className="alert alert-warning mb-4">
-                         Anda telah mencapai batas maksimal 3 dokumen. Hapus dokumen lama untuk mengunggah yang baru.
+                         Anda telah mencapai batas maksimal 10 dokumen. Hapus dokumen lama untuk mengunggah yang baru.
                     </div>
                 )}
 

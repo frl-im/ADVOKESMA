@@ -24,10 +24,10 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        // Batas maksimal 3 dokumen per Ketua Advo
+        // Batas maksimal 10 dokumen per Ketua Advo
         const currentCount = await db.advocacyDocument.count({ where: { uploaderId: userId } });
-        if (currentCount >= 3) {
-            return NextResponse.json({ error: 'Batas maksimal 3 dokumen telah tercapai. Anda harus menghapus dokumen lama terlebih dahulu.' }, { status: 400 });
+        if (currentCount >= 10) {
+            return NextResponse.json({ error: 'Batas maksimal 10 dokumen telah tercapai. Anda harus menghapus dokumen lama terlebih dahulu.' }, { status: 400 });
         }
 
         const formData = await req.formData();
@@ -47,22 +47,15 @@ export async function POST(req: Request) {
         }
 
         const buffer = Buffer.from(await file.arrayBuffer());
-        const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-]/g, '_')}`;
+        const base64String = buffer.toString('base64');
+        const fileUrl = `data:${file.type};base64,${base64String}`;
         
-        const publicDir = path.join(process.cwd(), 'public', 'uploads');
-        if (!fs.existsSync(publicDir)) {
-            fs.mkdirSync(publicDir, { recursive: true });
-        }
-
-        const filepath = path.join(publicDir, filename);
-        fs.writeFileSync(filepath, buffer);
-
         const scope = user.advocacyScope ?? 'UNIVERSITY';
         
         const doc = await db.advocacyDocument.create({
             data: {
                 title,
-                fileUrl: `/uploads/${filename}`,
+                fileUrl: fileUrl,
                 uploaderId: user.id,
                 level: scope === 'UKM' ? 'UKM' : scope,
                 prodiId: user.prodiId,
