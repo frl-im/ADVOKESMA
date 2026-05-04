@@ -9,7 +9,7 @@ interface ChartData {
     byLevel: { name: string; total: number; color: string }[];
     byMonth: { bulan: string; total: number }[];
     byProdi: { name: string; total: number }[];
-    top10: { title: string; count: number }[];
+    top10: { title: string; count: number; senders?: string[] }[];
 }
 
 interface Props {
@@ -169,10 +169,22 @@ export default function RecapCharts({ data, scope }: Props) {
                                         <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.5rem' }}>
                                             <span style={{ fontSize: '0.9rem', fontWeight: 700, color: '#1a3a6b', minWidth: 20 }}>#{index + 1}</span>
                                             <div style={{ flex: 1, minWidth: 0 }}>
-                                                <h4 style={{ margin: 0, fontSize: '0.85rem', color: '#1a1e2e', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={item.title}>
-                                                    {item.title}
-                                                </h4>
-                                                <div style={{ fontSize: '0.75rem', color: '#5a6480', marginTop: '0.1rem' }}>
+                                                <details style={{ cursor: 'pointer' }}>
+                                                    <summary style={{ margin: 0, fontSize: '0.85rem', color: '#1a1e2e', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontWeight: 600, outline: 'none' }} title={item.title}>
+                                                        {item.title}
+                                                    </summary>
+                                                    {item.senders && item.senders.length > 0 && (
+                                                        <div style={{ marginTop: '0.4rem', padding: '0.4rem', background: '#fff', borderRadius: '4px', fontSize: '0.75rem', color: '#5a6480', border: '1px solid #eef2ff' }}>
+                                                            <strong style={{ display: 'block', marginBottom: '0.2rem' }}>Dikirim oleh:</strong>
+                                                            <ul style={{ margin: 0, paddingLeft: '1.2rem' }}>
+                                                                {item.senders.map((sender, i) => (
+                                                                    <li key={i}>{sender}</li>
+                                                                ))}
+                                                            </ul>
+                                                        </div>
+                                                    )}
+                                                </details>
+                                                <div style={{ fontSize: '0.75rem', color: '#5a6480', marginTop: '0.2rem' }}>
                                                     {item.count} laporan
                                                 </div>
                                             </div>

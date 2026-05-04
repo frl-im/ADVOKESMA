@@ -152,15 +152,27 @@ export default async function RecapPage({ searchParams }: PageProps) {
         .sort((a, b) => b.total - a.total)
         .slice(0, 6);
 
-    const titleMap: Record<string, number> = {};
+    const titleMap: Record<string, { count: number, senders: Set<string> }> = {};
     aspirations.forEach((a: any) => {
         const t = a.title.trim();
-        titleMap[t] = (titleMap[t] || 0) + 1;
+        if (!titleMap[t]) titleMap[t] = { count: 0, senders: new Set() };
+        titleMap[t].count++;
+        let senderName = '';
+        if (a.level === 'PRODI' && a.prodi?.name) senderName = `Prodi ${a.prodi.name}`;
+        else if (a.level === 'FACULTY' && a.faculty?.name) senderName = `Fakultas ${a.faculty.name}`;
+        else if (a.level === 'UKM' && a.ukm?.name) senderName = `UKM ${a.ukm.name}`;
+        else if (a.student?.prodi?.name) {
+             senderName = `Prodi ${a.student.prodi.name}`;
+             if (a.student.prodi.faculty?.name) {
+                 senderName += ` (Fakultas ${a.student.prodi.faculty.name})`;
+             }
+        }
+        if (senderName) titleMap[t].senders.add(senderName);
     });
     const top10 = Object.entries(titleMap)
-        .sort((a, b) => b[1] - a[1])
+        .sort((a, b) => b[1].count - a[1].count)
         .slice(0, 10)
-        .map(([title, count]) => ({ title, count }));
+        .map(([title, data]) => ({ title, count: data.count, senders: Array.from(data.senders) }));
 
     const chartData = { byLevel, byMonth, byProdi, top10 };
 
@@ -350,7 +362,6 @@ export default async function RecapPage({ searchParams }: PageProps) {
                                             <thead>
                                                 <tr>
                                                     <th>Tanggal</th>
-                                                    <th>Nim Mahasiswa</th>
                                                     <th>Status</th>
                                                     <th>Level</th>
                                                     <th>Ditujukan Ke</th>
@@ -366,7 +377,6 @@ export default async function RecapPage({ searchParams }: PageProps) {
                                                                 day: '2-digit', month: 'short', year: 'numeric'
                                                             })}
                                                         </td>
-                                                        <td className="td-nim">{asp.student?.nim || '—'}</td>
                                                         <td>
                                                             {asp.isArchived ? (
                                                                 <span className="badge" style={{ background: '#dcfce7', color: '#166534', padding: '2px 8px', borderRadius: '12px' }}>Disimpan</span>
@@ -397,8 +407,8 @@ export default async function RecapPage({ searchParams }: PageProps) {
                                                                     </summary>
                                                                     <div style={{ marginTop: '0.5rem', padding: '0.75rem', background: '#f8faff', borderRadius: '4px', fontSize: '0.85rem', color: '#334155' }}>
                                                                         <p style={{ marginBottom: '0.5rem' }}><strong>Isi Aspirasi Lengkap:</strong><br/>{asp.content}</p>
-                                                                        <p style={{ margin: 0 }}><strong>Pengirim:</strong> {asp.student?.nim || '—'} 
-                                                                            {asp.student?.prodi ? ` - Prodi ${asp.student.prodi.name}` : ''}
+                                                                        <p style={{ margin: 0 }}><strong>Asal Pengirim:</strong>
+                                                                            {asp.student?.prodi ? ` Prodi ${asp.student.prodi.name}` : ''}
                                                                             {asp.student?.prodi?.faculty ? ` (Fakultas ${asp.student.prodi.faculty.name})` : ''}
                                                                         </p>
                                                                     </div>
@@ -407,8 +417,8 @@ export default async function RecapPage({ searchParams }: PageProps) {
                                                                 <>
                                                                     <div style={{ marginBottom: '0.5rem' }}>{asp.content}</div>
                                                                     <div style={{ fontSize: '0.75rem', color: '#8a95b0' }}>
-                                                                        <strong>Pengirim:</strong> {asp.student?.nim || '—'} 
-                                                                        {asp.student?.prodi ? ` - Prodi ${asp.student.prodi.name}` : ''}
+                                                                        <strong>Asal Pengirim:</strong>
+                                                                        {asp.student?.prodi ? ` Prodi ${asp.student.prodi.name}` : ''}
                                                                         {asp.student?.prodi?.faculty ? ` (Fakultas ${asp.student.prodi.faculty.name})` : ''}
                                                                     </div>
                                                                 </>
